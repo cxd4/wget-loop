@@ -27,6 +27,7 @@ main(int argc, char* argv[])
 
     if (argc < 5) {
         file_number = 0;
+        file_digits = strlen("0");
     } else {
         file_number = strtoul(argv[4], NULL, 10);
         file_digits = strlen(argv[4]);
