@@ -8,7 +8,7 @@ main(int argc, char* argv[])
 {
     size_t file_digits;
     char* full_command;
-    unsigned long i, file_start, file_end;
+    unsigned long i, count, file_start, file_end;
 
     if (argc < 2) {
         fprintf(stderr, "%s:  missing base URI\n", argv[0]);
@@ -20,7 +20,7 @@ main(int argc, char* argv[])
     }
 
     if (argc < 4) {
-        fputs("unspecified maximum file number to download\n", stderr);
+        fputs("unspecified file number limit\n", stderr);
         return 1;
     }
     file_end = strtoul(argv[3], NULL, 10);
@@ -32,6 +32,17 @@ main(int argc, char* argv[])
         file_start  = strtoul(argv[4], NULL, 10);
         file_digits = strlen(argv[4]);
     }
+
+    if (file_end < file_start) {
+        count = file_start; /* Swap end with start. */
+        file_start = file_end;
+        file_end   = count;
+    }
+    count = file_end - file_start;
+    printf(
+        "Downloading files numbered %lu through %lu.\n", file_start, file_end
+    );
+    ++count;
 
     full_command = (char *)malloc(
         sizeof("wget")
@@ -46,10 +57,10 @@ main(int argc, char* argv[])
         return 1;
     }
 
-    for (i = file_start; i <= file_end; i++) {
+    for (i = 0; i < count; i++) {
         sprintf(
             full_command, "wget %s%.*lu%s %s",
-            argv[1], file_digits, i, argv[2],
+            argv[1], file_digits, file_start + i, argv[2],
             "--auth-no-challenge"
         );
         system(full_command);
