@@ -8,7 +8,7 @@ main(int argc, char* argv[])
 {
     size_t file_digits;
     char* full_command;
-    unsigned long i, count, file_start, file_final;
+    unsigned long i, file_count, file_start, file_final;
 
     if (argc < 2) {
         fprintf(stderr, "%s:  missing base URI\n", argv[0]);
@@ -32,20 +32,23 @@ main(int argc, char* argv[])
     }
 
     if (file_final < file_start) {
-        count = file_start; /* Swap final with start. */
+        file_count = file_start; /* Swap final with start. */
         file_start = file_final;
-        file_final = count;
+        file_final = file_count;
 
-        count -= file_start;
+        file_count = file_count - file_start + 1;
         file_digits = strlen(argv[3]); /* We would swap argv[3] with argv[4]. */
     } else {
-        count = file_final - file_start;
+        file_count = file_final - file_start + 1;
         file_digits = strlen(argv[(argc >= 5) ? 4 : 3]);
     }
+
     printf(
-        "Downloading files numbered %lu through %lu.\n", file_start, file_final
+        "Downloading %lu files, numbered %lu through %lu.\n",
+        file_count, file_start, file_final
     );
-    ++count;
+    puts("If this is correct, press ENTER to start.");
+    getchar();
 
     full_command = (char *)malloc(
         sizeof("wget")
@@ -60,7 +63,7 @@ main(int argc, char* argv[])
         return 1;
     }
 
-    for (i = 0; i < count; i++) {
+    for (i = 0; i < file_count; i++) {
         sprintf(
             full_command, "wget %s%.*lu%s %s",
             argv[1], file_digits, file_start + i, argv[2],
