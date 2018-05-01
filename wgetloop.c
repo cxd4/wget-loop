@@ -46,10 +46,10 @@ main(int argc, char* argv[])
         return 1;
     }
 
-    for (i = 0; i <= file_end; i++) {
+    for (i = file_start; i <= file_end; i++) {
         sprintf(
             full_command, "wget %s%.*lu%s %s",
-            argv[1], file_digits, file_start + i, argv[2],
+            argv[1], file_digits, i, argv[2],
             "--auth-no-challenge"
         );
         system(full_command);
