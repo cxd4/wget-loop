@@ -8,7 +8,7 @@ main(int argc, char* argv[])
 {
     size_t file_digits;
     char* full_command;
-    unsigned long i, count, file_start, file_end;
+    unsigned long i, count, file_start, file_final;
 
     if (argc < 2) {
         fprintf(stderr, "%s:  missing base URI\n", argv[0]);
@@ -23,25 +23,27 @@ main(int argc, char* argv[])
         fputs("unspecified file number limit\n", stderr);
         return 1;
     }
-    file_end = strtoul(argv[3], NULL, 10);
-    if (argc < 5)
+    if (argc < 5) {
+        file_final = strtoul(argv[3], NULL, 10);
         file_start = 0;
-    else
-        file_start = strtoul(argv[4], NULL, 10);
+    } else {
+        file_start = strtoul(argv[3], NULL, 10);
+        file_final = strtoul(argv[4], NULL, 10);
+    }
 
-    if (file_end < file_start) {
-        count = file_start; /* Swap end with start. */
-        file_start = file_end;
-        file_end   = count;
+    if (file_final < file_start) {
+        count = file_start; /* Swap final with start. */
+        file_start = file_final;
+        file_final = count;
 
         count -= file_start;
         file_digits = strlen(argv[3]); /* We would swap argv[3] with argv[4]. */
     } else {
-        count = file_end - file_start;
+        count = file_final - file_start;
         file_digits = strlen(argv[(argc >= 5) ? 4 : 3]);
     }
     printf(
-        "Downloading files numbered %lu through %lu.\n", file_start, file_end
+        "Downloading files numbered %lu through %lu.\n", file_start, file_final
     );
     ++count;
 
