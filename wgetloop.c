@@ -3,10 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <limits.h>
+
 int
 main(int argc, char* argv[])
 {
     size_t file_digits;
+    int zero_padding;
+
     char* full_command;
     unsigned long i, file_count, file_start, file_final;
 
@@ -42,6 +46,11 @@ main(int argc, char* argv[])
         file_count = file_final - file_start + 1;
         file_digits = strlen(argv[(argc >= 5) ? 4 : 3]);
     }
+    if (file_digits > INT_MAX) {
+        file_digits = INT_MAX;
+        fputs("Warning:  Excessive digits count wrapped to INT_MAX.\n", stderr);
+    }
+    zero_padding = (int)file_digits;
 
     printf(
         "Downloading %lu files, numbered %lu through %lu.\n",
@@ -66,7 +75,7 @@ main(int argc, char* argv[])
     for (i = 0; i < file_count; i++) {
         sprintf(
             full_command, "wget %s%.*lu%s %s",
-            argv[1], file_digits, file_start + i, argv[2],
+            argv[1], zero_padding, file_start + i, argv[2],
             "--auth-no-challenge"
         );
         system(full_command);
