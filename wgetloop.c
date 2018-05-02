@@ -5,6 +5,16 @@
 
 #include <limits.h>
 
+static const char Wget_options[] =
+    "--no-verbose " \
+    "--show-progress " \
+    "--report-speed=bits " \
+    "--wait=20 " \
+    "--random-wait " \
+    "--unlink " \
+    ""
+;
+
 int
 main(int argc, char* argv[])
 {
@@ -65,7 +75,7 @@ main(int argc, char* argv[])
       + strlen(argv[2]) /* example:  ".jpg" */
       + file_digits /* example:  "000000" */
       + 1 /* in case URL counts like (9.jpg, 10.jpg), not (09.jpg, 10.jpg) */
-      + sizeof("--auth-no-challenge")
+      + sizeof(Wget_options)
     );
     if (full_command == NULL) {
         fputs("insufficient free memory available\n", stderr);
@@ -75,8 +85,7 @@ main(int argc, char* argv[])
     for (i = 0; i < file_count; i++) {
         sprintf(
             full_command, "wget %s%.*lu%s %s",
-            argv[1], zero_padding, file_start + i, argv[2],
-            "--auth-no-challenge"
+            argv[1], zero_padding, file_start + i, argv[2], Wget_options
         );
         system(full_command);
     }
