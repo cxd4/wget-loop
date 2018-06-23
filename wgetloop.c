@@ -9,7 +9,7 @@ static const char Wget_options[] =
     "--no-verbose " \
     "--show-progress " \
     "--report-speed=bits " \
-    "--wait=20 " \
+    "--wait=5 " \
     "--random-wait " \
     "--unlink " \
     ""
